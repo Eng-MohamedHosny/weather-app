@@ -11,6 +11,7 @@ import { fetchWeatherData } from './services/weatherApi';
 import {
   getIpLocation,
   getPreciseLocation,
+  getSavedLocation,
   DEFAULT_FALLBACK_LOCATION,
 } from './services/locationService';
 
@@ -26,12 +27,30 @@ export default function App() {
   const [error, setError] = useState(null);
   const [noResults, setNoResults] = useState(false);
 
-  // Initialize location based on IP geolocation, then ask for precise GPS
+  // Initialize location: saved precise location -> GPS request -> IP fallback
   useEffect(() => {
     let isMounted = true;
 
     async function initUserLocation() {
-      // 1. Immediately get location based on user's public IP
+      // 1. Check if user already has a saved precise location
+      const saved = getSavedLocation();
+      if (saved) {
+        if (isMounted) setLocation(saved);
+        return;
+      }
+
+      // 2. Request browser GPS permission for exact city
+      try {
+        const preciseLoc = await getPreciseLocation();
+        if (isMounted && preciseLoc) {
+          setLocation(preciseLoc);
+          return;
+        }
+      } catch (err) {
+        console.info('GPS not available yet, using IP fallback:', err.message);
+      }
+
+      // 3. Fallback to IP address location
       try {
         const ipLoc = await getIpLocation();
         if (isMounted && ipLoc) {
@@ -39,16 +58,6 @@ export default function App() {
         }
       } catch (err) {
         console.warn('IP geolocation failed:', err);
-      }
-
-      // 2. Request permission for high-precision GPS coordinates
-      try {
-        const preciseLoc = await getPreciseLocation();
-        if (isMounted && preciseLoc) {
-          setLocation(preciseLoc);
-        }
-      } catch (err) {
-        console.info('Precision geolocation not granted or unavailable:', err.message);
       }
     }
 
@@ -116,6 +125,20 @@ export default function App() {
               onNoResults={(empty) => setNoResults(empty)}
               onUseCurrentLocation={handleUseCurrentLocation}
             />
+
+            {/* Approximate location notice with GPS upgrade button */}
+            {location && !location.isPrecise && (
+              <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-neutral-300">
+                <span>Detected via IP ({location.name}).</span>
+                <button
+                  type="button"
+                  onClick={handleUseCurrentLocation}
+                  className="text-brand-blue hover:text-white underline font-medium cursor-pointer transition-colors"
+                >
+                  Click for precise GPS location (e.g. Sohag)
+                </button>
+              </div>
+            )}
           </section>
 
           {/* Dynamic States: Error / No Results / Loading / Content */}
