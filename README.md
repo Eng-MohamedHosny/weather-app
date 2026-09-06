@@ -37,6 +37,7 @@
 | :--- | :--- | :--- |
 | **Official Production** | **[https://weather-now-live.vercel.app](https://weather-now-live.vercel.app)** | ![Status](https://img.shields.io/badge/Active-Success-brightgreen?style=flat-square) |
 | **GitHub Repository** | **[Eng-MohamedHosny/weather-app](https://github.com/Eng-MohamedHosny/weather-app)** | ![Stars](https://img.shields.io/github/stars/Eng-MohamedHosny/weather-app?style=flat-square) |
+| **Frontend Mentor Solution** | **[View Solution Page](https://www.frontendmentor.io/solutions/weather-now-real-time-bilingual-enar-pwa-weather-app-dTZ44_iKxf)** | ![Frontend Mentor](https://img.shields.io/badge/Solution-Published-3F51B5?style=flat-square) |
 | **Challenge** | [Frontend Mentor — Build a Weather App](https://www.frontendmentor.io/challenges/weather-app-K1FhddVm49) | ![Level](https://img.shields.io/badge/Level-Advanced-orange?style=flat-square) |
 
 ---
