@@ -7,6 +7,7 @@ import DailyForecast from './components/DailyForecast';
 import HourlyForecast from './components/HourlyForecast';
 import LoadingSkeleton from './components/LoadingSkeleton';
 import ErrorState from './components/ErrorState';
+import InstallPwaModal from './components/InstallPwaModal';
 import { fetchWeatherData } from './services/weatherApi';
 import {
   getIpLocation,
@@ -125,20 +126,6 @@ export default function App() {
               onNoResults={(empty) => setNoResults(empty)}
               onUseCurrentLocation={handleUseCurrentLocation}
             />
-
-            {/* Approximate location notice with GPS upgrade button */}
-            {location && !location.isPrecise && (
-              <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-neutral-300">
-                <span>Detected via IP ({location.name}).</span>
-                <button
-                  type="button"
-                  onClick={handleUseCurrentLocation}
-                  className="text-brand-blue hover:text-white underline font-medium cursor-pointer transition-colors"
-                >
-                  Click for precise GPS location (e.g. Sohag)
-                </button>
-              </div>
-            )}
           </section>
 
           {/* Dynamic States: Error / No Results / Loading / Content */}
@@ -183,6 +170,7 @@ export default function App() {
           ) : null}
         </main>
       </div>
+      <InstallPwaModal />
     </div>
   );
 }

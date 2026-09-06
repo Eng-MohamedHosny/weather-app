@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 
 export default function HeroWeatherBackground() {
   return (
@@ -55,7 +55,7 @@ export default function HeroWeatherBackground() {
           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
           <feTurbulence
             type="fractalNoise"
-            baseFrequency="1 1"
+            baseFrequency="0.75 0.75"
             stitchTiles="stitch"
             numOctaves="3"
             result="noise"
@@ -63,13 +63,11 @@ export default function HeroWeatherBackground() {
           />
           <feColorMatrix in="noise" type="luminanceToAlpha" result="alphaNoise" />
           <feComponentTransfer in="alphaNoise" result="coloredNoise1">
-            <feFuncA
-              type="discrete"
-              tableValues="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "
-            />
+            <feFuncA type="linear" slope="0.10" />
           </feComponentTransfer>
-          <feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
-          <feFlood floodColor="rgba(255, 255, 255, 0.35)" result="color1Flood" />
+          <feGaussianBlur in="coloredNoise1" stdDeviation="0.35" result="softNoise" />
+          <feComposite operator="in" in2="shape" in="softNoise" result="noise1Clipped" />
+          <feFlood floodColor="rgba(255, 255, 255, 0.14)" result="color1Flood" />
           <feComposite operator="in" in2="noise1Clipped" in="color1Flood" result="color1" />
           <feMerge result="effect1_noise_233_1146">
             <feMergeNode in="shape" />
