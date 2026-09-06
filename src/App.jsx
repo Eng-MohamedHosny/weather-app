@@ -8,6 +8,7 @@ import HourlyForecast from './components/HourlyForecast';
 import LoadingSkeleton from './components/LoadingSkeleton';
 import ErrorState from './components/ErrorState';
 import InstallPwaModal from './components/InstallPwaModal';
+import { useLanguage } from './context/LanguageContext';
 import { fetchWeatherData } from './services/weatherApi';
 import {
   getIpLocation,
@@ -17,6 +18,7 @@ import {
 } from './services/locationService';
 
 export default function App() {
+  const { t } = useLanguage();
   const [location, setLocation] = useState(DEFAULT_FALLBACK_LOCATION);
   const [units, setUnits] = useState({
     temperature: 'celsius',
@@ -113,7 +115,7 @@ export default function App() {
           {/* Hero Section */}
           <section className="text-center pt-2 md:pt-4 pb-2 md:pb-4">
             <h1 className="max-w-[343px] md:max-w-[482px] lg:max-w-[731px] mx-auto text-[40px] md:text-[52px] font-bold font-heading text-neutral-0 tracking-tight leading-[1.15] md:leading-[1.2] my-8 md:my-12">
-              How's the sky looking today?
+              {t('headline')}
             </h1>
 
             {/* Search Bar */}
@@ -134,7 +136,7 @@ export default function App() {
           ) : noResults ? (
             <div className="py-16 text-center">
               <p className="text-xl sm:text-2xl font-bold font-heading text-neutral-0">
-                No search result found!
+                {t('noResults')}
               </p>
             </div>
           ) : loading && !weather ? (

@@ -10,22 +10,35 @@
   }
 }
 
-/* Custom scrollbar for hourly forecast */
-.scrollbar-thin::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
+/* Custom Theme Scrollbar (Global & Custom Containers) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: hsl(243, 27%, 20%);
+::-webkit-scrollbar-track {
+  background: hsl(243, 27%, 16%);
   border-radius: 9999px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background: hsl(243, 23%, 30%);
+::-webkit-scrollbar-thumb {
+  background: hsl(243, 23%, 34%);
   border-radius: 9999px;
+  border: 2px solid hsl(243, 27%, 16%);
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: hsl(240, 6%, 70%);
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(233, 67%, 56%);
 }
+
+/* Firefox standard scrollbar properties */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(243, 23%, 34%) hsl(243, 27%, 16%);
+}
+
+/* Ensure smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+

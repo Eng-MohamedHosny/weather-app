@@ -1,34 +1,36 @@
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function WeatherMetrics({ current, units }) {
+  const { t, lang } = useLanguage();
   if (!current) return null;
 
   const feelsLike = Math.round(current.apparent_temperature ?? current.temperature_2m);
   const humidity = current.relative_humidity_2m ?? 0;
   const windSpeed = Math.round(current.wind_speed_10m ?? 0);
-  const windUnit = units.windSpeed === 'mph' ? 'mph' : 'km/h';
+  const windUnit = units.windSpeed === 'mph' ? (lang === 'ar' ? 'ميل/س' : 'mph') : (lang === 'ar' ? 'كم/س' : 'km/h');
   const precipitation = current.precipitation ?? 0;
-  const precipUnit = units.precipitation === 'inch' ? 'in' : 'mm';
+  const precipUnit = units.precipitation === 'inch' ? (lang === 'ar' ? 'إنش' : 'in') : (lang === 'ar' ? 'مم' : 'mm');
 
   const metrics = [
     {
       id: 'feels_like',
-      label: 'Feels like',
+      label: t('feelsLike'),
       value: `${feelsLike}°`,
     },
     {
       id: 'humidity',
-      label: 'Humidity',
+      label: t('humidity'),
       value: `${humidity}%`,
     },
     {
       id: 'wind',
-      label: 'Wind',
+      label: t('wind'),
       value: `${windSpeed} ${windUnit}`,
     },
     {
       id: 'precipitation',
-      label: 'Precipitation',
+      label: t('precipitationLabel'),
       value: `${precipitation} ${precipUnit}`,
     },
   ];

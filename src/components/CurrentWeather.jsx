@@ -1,14 +1,16 @@
 import React from 'react';
 import { getWeatherInfo, formatFullDate } from '../utils/weatherCodes';
 import HeroWeatherBackground from './HeroWeatherBackground';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function CurrentWeather({ location, weather, units }) {
+  const { lang } = useLanguage();
   if (!weather || !weather.current) return null;
 
   const current = weather.current;
-  const info = getWeatherInfo(current.weather_code);
+  const info = getWeatherInfo(current.weather_code, lang);
   const tempRounded = Math.round(current.temperature_2m);
-  const dateFormatted = formatFullDate(current.time);
+  const dateFormatted = formatFullDate(current.time, lang);
 
   return (
     <div
@@ -17,9 +19,9 @@ export default function CurrentWeather({ location, weather, units }) {
       {/* Exact Figma vector artwork + native filter0_n_233_1146 feTurbulence noise */}
       <HeroWeatherBackground />
 
-      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 my-auto text-center md:text-left w-full">
+      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 my-auto text-center md:text-left rtl:md:text-right w-full">
         {/* Location & Date */}
-        <div className="flex flex-col items-center md:items-start">
+        <div className="flex flex-col items-center md:items-start rtl:md:items-start">
           <h2 className="text-2xl sm:text-3xl md:text-[32px] font-bold font-heading text-neutral-0 tracking-tight leading-snug drop-shadow-sm">
             {location.name}
             {location.country ? `, ${location.country}` : ''}
@@ -36,7 +38,7 @@ export default function CurrentWeather({ location, weather, units }) {
             alt={info.label}
             className="w-20 h-20 sm:w-24 sm:h-24 md:w-[110px] md:h-[110px] lg:w-[120px] lg:h-[120px] object-contain drop-shadow-lg"
           />
-          <div className="flex items-start">
+          <div className="flex items-start" dir="ltr">
             <span className="text-6xl sm:text-7xl md:text-[96px] font-bold font-heading text-neutral-0 leading-none tracking-tighter">
               {tempRounded}
             </span>

@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { getWeatherInfo, formatDayName, formatHour } from '../utils/weatherCodes';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function HourlyForecast({ hourly, daily }) {
+  const { t, lang } = useLanguage();
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
   const [dayDropdownOpen, setDayDropdownOpen] = useState(false);
 
@@ -11,9 +13,9 @@ export default function HourlyForecast({ hourly, daily }) {
     return daily.time.slice(0, 7).map((dateStr, idx) => ({
       index: idx,
       date: dateStr,
-      label: formatDayName(dateStr, false),
+      label: idx === 0 ? t('today') : formatDayName(dateStr, false, lang),
     }));
-  }, [daily]);
+  }, [daily, lang, t]);
 
   // Extract hourly data for the selected day
   const hourlyForSelectedDay = useMemo(() => {
@@ -38,22 +40,22 @@ export default function HourlyForecast({ hourly, daily }) {
     for (let i = 0; i < 8; i++) {
       const idx = (startHour + i) % 24;
       result.push({
-        time: formatHour(dayTimes[idx] || dayTimes[0]),
+        time: formatHour(dayTimes[idx] || dayTimes[0], lang),
         temp: Math.round(dayTemps[idx] ?? 0),
         code: dayCodes[idx] ?? 0,
       });
     }
     return result;
-  }, [hourly, selectedDayIndex]);
+  }, [hourly, selectedDayIndex, lang]);
 
-  const currentSelectedDay = daysList[selectedDayIndex]?.label || 'Tuesday';
+  const currentSelectedDay = daysList[selectedDayIndex]?.label || (lang === 'ar' ? 'اليوم' : 'Today');
 
   return (
     <div className="bg-neutral-800 rounded-[20px] md:rounded-[24px] p-5 sm:p-6 border border-neutral-700/60 shadow-card flex flex-col h-full">
       {/* Header with Day Selector Dropdown */}
       <div className="flex items-center justify-between mb-5 sm:mb-6 relative">
-        <h3 className="text-xl font-bold font-heading text-neutral-0 tracking-tight">
-          Hourly forecast
+        <h3 className="text-xl font-bold font-heading text-neutral-0 tracking-tight text-left rtl:text-right">
+          {t('hourlyForecast')}
         </h3>
 
         <div className="relative">
@@ -79,7 +81,7 @@ export default function HourlyForecast({ hourly, daily }) {
                 className="fixed inset-0 z-30"
                 onClick={() => setDayDropdownOpen(false)}
               />
-              <div className="absolute right-0 top-full mt-2 z-40 w-48 rounded-2xl bg-neutral-800 border border-neutral-700 shadow-dropdown p-1.5 overflow-hidden">
+              <div className="absolute right-0 rtl:right-auto rtl:left-0 top-full mt-2 z-40 w-48 rounded-2xl bg-neutral-800 border border-neutral-700 shadow-dropdown p-1.5 overflow-hidden">
                 {daysList.map((d) => (
                   <button
                     key={d.index}
@@ -88,7 +90,7 @@ export default function HourlyForecast({ hourly, daily }) {
                       setSelectedDayIndex(d.index);
                       setDayDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-3.5 py-2.5 text-sm rounded-lg transition-colors flex items-center justify-between ${
+                    className={`w-full text-left rtl:text-right px-3.5 py-2.5 text-sm rounded-lg transition-colors flex items-center justify-between ${
                       selectedDayIndex === d.index
                         ? 'text-neutral-0 font-semibold bg-neutral-700/70'
                         : 'text-neutral-200 hover:bg-neutral-700/40'

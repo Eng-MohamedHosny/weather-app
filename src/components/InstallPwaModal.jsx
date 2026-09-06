@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function InstallPwaModal() {
+  const { t, lang } = useLanguage();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIos, setIsIos] = useState(false);
@@ -72,15 +74,15 @@ export default function InstallPwaModal() {
         </div>
 
         {/* Text & Actions */}
-        <div className="flex-1">
+        <div className="flex-1 text-left rtl:text-right">
           <div className="flex items-center justify-between">
             <h4 className="font-heading font-bold text-neutral-0 text-base">
-              Install Weather Now
+              {t('installTitle')}
             </h4>
             <button
               type="button"
               onClick={handleDismiss}
-              className="text-neutral-300 hover:text-white p-1 rounded-lg transition-colors text-sm"
+              className="text-neutral-300 hover:text-white p-1 rounded-lg transition-colors text-sm cursor-pointer"
               aria-label="Close"
             >
               ✕
@@ -88,9 +90,7 @@ export default function InstallPwaModal() {
           </div>
 
           <p className="text-neutral-200 text-xs sm:text-sm mt-1 leading-relaxed">
-            {isIos
-              ? 'Install on your iPhone: tap Share ⎋ and select "Add to Home Screen" ⊞.'
-              : 'Add Weather Now to your phone for instant, fullscreen weather forecasts anytime.'}
+            {isIos ? t('installIosDesc') : t('installDesc')}
           </p>
 
           <div className="flex items-center gap-2.5 mt-3.5">
@@ -100,7 +100,7 @@ export default function InstallPwaModal() {
                 onClick={handleInstallClick}
                 className="bg-brand-blue hover:bg-brand-blueHover text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-xl transition-all shadow-md focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white cursor-pointer"
               >
-                Install App
+                {t('installBtn')}
               </button>
             )}
             <button
@@ -108,7 +108,7 @@ export default function InstallPwaModal() {
               onClick={handleDismiss}
               className="bg-neutral-700/60 hover:bg-neutral-700 text-neutral-200 text-xs sm:text-sm font-medium px-3.5 py-2 rounded-xl transition-colors cursor-pointer"
             >
-              {isIos ? 'Got it' : 'Maybe Later'}
+              {isIos ? (lang === 'ar' ? 'فهمت' : 'Got it') : t('dismissBtn')}
             </button>
           </div>
         </div>

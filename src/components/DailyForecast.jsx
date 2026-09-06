@@ -1,12 +1,14 @@
 import React from 'react';
 import { getWeatherInfo, formatDayName } from '../utils/weatherCodes';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function DailyForecast({ daily }) {
+  const { t, lang } = useLanguage();
   if (!daily || !daily.time) return null;
 
   const days = daily.time.slice(0, 7).map((dateStr, idx) => ({
     date: dateStr,
-    dayLabel: idx === 0 ? 'Today' : formatDayName(dateStr, true),
+    dayLabel: idx === 0 ? t('today') : formatDayName(dateStr, true, lang),
     code: daily.weather_code[idx],
     maxTemp: Math.round(daily.temperature_2m_max[idx]),
     minTemp: Math.round(daily.temperature_2m_min[idx]),
@@ -14,8 +16,8 @@ export default function DailyForecast({ daily }) {
 
   return (
     <div className="mt-8">
-      <h3 className="text-xl font-bold font-heading text-neutral-0 mb-4 tracking-tight">
-        Daily forecast
+      <h3 className="text-xl font-bold font-heading text-neutral-0 mb-4 tracking-tight text-left rtl:text-right">
+        {t('dailyForecast')}
       </h3>
 
       {/* Fluid responsive grid: 3 columns on mobile (<768px), 7 columns on tablet (768px+) & desktop */}

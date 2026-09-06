@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { searchLocations } from '../services/weatherApi';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SearchBar({ onSelectLocation, isSearching, onNoResults, onUseCurrentLocation }) {
+  const { t, lang, dir } = useLanguage();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
@@ -9,6 +11,8 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults, 
   const [showDropdown, setShowDropdown] = useState(false);
   const [hasNoResults, setHasNoResults] = useState(false);
   const wrapperRef = useRef(null);
+
+  const isRtl = dir === 'rtl' || lang === 'ar';
 
   const handleGpsClick = async () => {
     if (onUseCurrentLocation) {
@@ -35,7 +39,7 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults, 
       setLoadingSuggestions(true);
       setShowDropdown(true);
       try {
-        const results = await searchLocations(query);
+        const results = await searchLocations(query, lang);
         setSuggestions(results);
         const empty = results.length === 0;
         setHasNoResults(empty);
@@ -51,7 +55,7 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults, 
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [query, onNoResults]);
+  }, [query, lang, onNoResults]);
 
   // Click outside listener
   useEffect(() => {
@@ -66,7 +70,9 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults, 
 
   const handleSelect = (item) => {
     setShowDropdown(false);
-    setQuery(`${item.name}${item.country ? ', ' + item.country : ''}`);
+    const sep = isRtl ? '، ' : ', ';
+    const details = [item.admin1, item.country].filter(Boolean).join(sep);
+    setQuery(`${item.name}${details ? sep + details : ''}`);
     onSelectLocation({
       name: item.name,
       country: item.country,
@@ -82,7 +88,7 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults, 
       handleSelect(suggestions[0]);
     } else if (query.trim().length >= 2) {
       // Trigger search
-      searchLocations(query).then((res) => {
+      searchLocations(query, lang).then((res) => {
         if (res.length > 0) {
           handleSelect(res[0]);
         } else {
@@ -101,7 +107,11 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults, 
         className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4"
       >
         <div className="relative flex-1">
-          <div className="absolute inset-y-0 left-0 pl-4 sm:pl-5 flex items-center pointer-events-none">
+          {/* Search icon */}
+          <div
+            className="absolute inset-y-0 flex items-center pointer-events-none"
+            style={isRtl ? { right: '18px' } : { left: '18px' }}
+          >
             {loadingSuggestions || isSearching ? (
               <img
                 src="/assets/images/icon-loading.svg"
@@ -116,6 +126,7 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults, 
               />
             )}
           </div>
+
           <input
             type="text"
             value={query}
@@ -123,17 +134,23 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults, 
             onFocus={() => {
               if (query.trim().length >= 2) setShowDropdown(true);
             }}
-            placeholder="Search for a place..."
-            className="w-full bg-neutral-800 text-neutral-0 placeholder-neutral-300 pl-12 sm:pl-14 pr-12 h-[56px] rounded-xl border border-neutral-700 hover:border-neutral-600 focus:border-neutral-500 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white text-base shadow-card transition-all"
+            placeholder={t('searchPlaceholder')}
+            style={{
+              paddingLeft: isRtl ? '48px' : '54px',
+              paddingRight: isRtl ? '54px' : '48px',
+              textAlign: isRtl ? 'right' : 'left',
+            }}
+            className="w-full bg-neutral-800 text-neutral-0 placeholder-neutral-300 h-[56px] rounded-xl border border-neutral-700 hover:border-neutral-600 focus:border-neutral-500 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white text-base shadow-card transition-all"
           />
 
           {/* Precise Location GPS Button */}
           <button
             type="button"
             onClick={handleGpsClick}
-            title="Use my current precise location"
-            aria-label="Use current location"
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-700/60 transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+            title={t('useGps')}
+            aria-label={t('useGps')}
+            style={isRtl ? { left: '12px' } : { right: '12px' }}
+            className="absolute top-1/2 -translate-y-1/2 p-2 rounded-lg text-neutral-300 hover:text-white hover:bg-neutral-700/60 transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
             {locatingGps ? (
               <img
@@ -166,13 +183,16 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults, 
           {showDropdown && query.trim().length >= 2 && (
             <div className="absolute left-0 right-0 top-full mt-2 bg-neutral-800 border border-neutral-700 rounded-xl shadow-dropdown overflow-hidden z-50">
               {loadingSuggestions ? (
-                <div className="px-5 py-4 text-neutral-200 text-sm flex items-center gap-3">
+                <div
+                  className="px-5 py-4 text-neutral-200 text-sm flex items-center gap-3"
+                  style={{ justifyContent: isRtl ? 'flex-start' : 'flex-start' }}
+                >
                   <img
                     src="/assets/images/icon-loading.svg"
                     alt=""
                     className="w-4 h-4 animate-spin"
                   />
-                  <span>Search in progress</span>
+                  <span>{t('searchInProgress')}</span>
                 </div>
               ) : suggestions.length > 0 ? (
                 <ul className="divide-y divide-neutral-700/50 max-h-60 overflow-y-auto">
@@ -181,15 +201,19 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults, 
                       <button
                         type="button"
                         onClick={() => handleSelect(item)}
-                        className="w-full text-left px-5 py-3 hover:bg-neutral-700/60 transition-colors flex items-center justify-between group"
+                        style={{ textAlign: isRtl ? 'right' : 'left' }}
+                        className="w-full px-5 py-3 hover:bg-neutral-700/60 transition-colors block group"
                       >
-                        <div>
+                        <div style={{ textAlign: isRtl ? 'right' : 'left' }}>
                           <span className="font-medium text-neutral-0 group-hover:text-white">
                             {item.name}
                           </span>
                           {(item.admin1 || item.country) && (
-                            <span className="text-neutral-300 text-xs ml-2">
-                              {[item.admin1, item.country].filter(Boolean).join(', ')}
+                            <span className="text-neutral-300 text-xs">
+                              {(isRtl ? '، ' : ', ') +
+                                [item.admin1, item.country]
+                                  .filter(Boolean)
+                                  .join(isRtl ? '، ' : ', ')}
                             </span>
                           )}
                         </div>
@@ -206,7 +230,7 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults, 
           type="submit"
           className="bg-brand-blue hover:bg-brand-blueHover text-white font-medium h-[56px] px-8 rounded-xl transition-all shadow-card flex items-center justify-center text-base focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white cursor-pointer w-full md:w-auto"
         >
-          Search
+          {t('searchBtn')}
         </button>
       </form>
     </div>
