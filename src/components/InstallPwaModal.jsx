@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function InstallPwaModal() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -67,8 +67,8 @@ export default function InstallPwaModal() {
     <div className="fixed inset-x-4 bottom-6 z-50 max-w-md mx-auto animate-fade-in">
       <div className="bg-neutral-800 border border-neutral-700/80 rounded-2xl p-4 sm:p-5 shadow-2xl flex items-start gap-4 backdrop-blur-md bg-neutral-800/95">
         {/* App Logo Icon */}
-        <div className="w-12 h-12 rounded-xl bg-neutral-900 border border-neutral-700 flex items-center justify-center flex-shrink-0 p-1.5 shadow-md">
-          <img src="/favicon.svg" alt="Weather Now" className="w-8 h-8 object-contain" />
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md overflow-hidden">
+          <img src="/pwa-icon.svg" alt="Weather Now" className="w-12 h-12 object-cover rounded-xl" />
         </div>
 
         {/* Text & Actions */}

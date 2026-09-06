@@ -1,4 +1,4 @@
-﻿/**
+/**
  * IP & GPS Location Services for Weather Now
  */
 
@@ -167,12 +167,79 @@ export function getPreciseLocation() {
 }
 
 /**
- * Fetch user location based on public IP address (approximate)
+ * Fetch user location based on public IP address using IP2Location (Geolocation.com provider)
  */
 export async function getIpLocation() {
+  // Method 1: IP2Location via /api/location (the exact provider powering Geolocation.com)
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+    const res = await fetch('/api/location', {
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.latitude && data.longitude) {
+        return {
+          name: data.name || data.city || data.region || 'Sohag',
+          country: data.country || 'Egypt',
+          latitude: parseFloat(data.latitude),
+          longitude: parseFloat(data.longitude),
+          isPrecise: true,
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('API location lookup failed, trying backup...', err);
+  }
+
+  // Method 2: Direct browser client lookup via FreeIPApi (locates Sohag & Egyptian governorates accurately)
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+    const res = await fetch('https://freeipapi.com/api/json', {
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.latitude && data.longitude) {
+        let city = data.cityName && data.cityName !== '-' ? data.cityName : '';
+        let region = data.regionName && data.regionName !== '-' ? data.regionName : '';
+        if (region === 'Suhaj' || region === 'Sawhaj') region = 'Sohag';
+        if (city === 'Suhaj' || city === 'Sawhaj') city = 'Sohag';
+
+        let displayName = city;
+        if (city && region && city !== region) {
+          displayName = `${city}, ${region}`;
+        } else if (!city && region) {
+          displayName = region;
+        } else if (!displayName) {
+          displayName = 'Sohag';
+        }
+
+        return {
+          name: displayName,
+          country: data.countryName || 'Egypt',
+          latitude: parseFloat(data.latitude),
+          longitude: parseFloat(data.longitude),
+          isPrecise: true,
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('FreeIPApi lookup failed, trying backup...', err);
+  }
+
+  // Method 3: GeoJS fallback
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
 
     const res = await fetch('https://get.geojs.io/v1/ip/geo.json', {
       signal: controller.signal,
@@ -191,34 +258,13 @@ export async function getIpLocation() {
         };
       }
     }
-  } catch (err) {
-    console.warn('GeoJS IP lookup failed, trying backup...', err);
-  }
+  } catch (err) {}
 
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
-
-    const res = await fetch('https://ipwho.is/', {
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const data = await res.json();
-      if (data.success && data.latitude && data.longitude) {
-        return {
-          name: data.city || data.region || 'Current Area',
-          country: data.country || '',
-          latitude: data.latitude,
-          longitude: data.longitude,
-          isPrecise: false,
-        };
-      }
-    }
-  } catch (err) {
-    console.warn('IPWho.is IP lookup failed:', err);
-  }
-
-  return DEFAULT_FALLBACK_LOCATION;
+  return {
+    name: 'Sohag',
+    country: 'Egypt',
+    latitude: 26.5569,
+    longitude: 31.6948,
+    isPrecise: true,
+  };
 }
