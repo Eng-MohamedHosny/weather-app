@@ -160,31 +160,6 @@ export default function App() {
           ) : null}
         </main>
       </div>
-
-      {/* Footer / Attribution */}
-      <footer className="py-6 text-center text-xs text-neutral-300/70 border-t border-neutral-800/80">
-        <p>
-          Challenge by{' '}
-          <a
-            href="https://www.frontendmentor.io?ref=challenge"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-neutral-200 hover:text-white underline transition-colors"
-          >
-            Frontend Mentor
-          </a>
-          . Coded by{' '}
-          <a
-            href="https://github.com/Eng-MohamedHosny"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-neutral-200 hover:text-white underline transition-colors font-medium"
-          >
-            Mohamed Hosny
-          </a>
-          .
-        </p>
-      </footer>
     </div>
   );
 }
