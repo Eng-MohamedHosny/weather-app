@@ -30,3 +30,5 @@ dist-ssr
 _figma_archive/
 _starter_archive/
 *.fig
+
+.vercel

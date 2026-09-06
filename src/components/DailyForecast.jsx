@@ -14,17 +14,18 @@ export default function DailyForecast({ daily }) {
 
   return (
     <div className="mt-8">
-      <h3 className="text-xl font-bold font-heading text-neutral-0 mb-4">
+      <h3 className="text-xl font-bold font-heading text-neutral-0 mb-4 tracking-tight">
         Daily forecast
       </h3>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3 sm:gap-4">
+      {/* Fluid responsive grid: 3 columns on mobile, 7 columns on tablet & desktop */}
+      <div className="grid grid-cols-3 sm:grid-cols-7 gap-3 sm:gap-3.5 md:gap-4">
         {days.map((d, index) => {
           const info = getWeatherInfo(d.code);
           return (
             <div
               key={d.date + index}
-              className="bg-neutral-800 rounded-2xl p-4 border border-neutral-700/60 shadow-card flex flex-col items-center justify-between text-center min-h-[165px] transition-all hover:-translate-y-1 hover:border-neutral-500 duration-200"
+              className="bg-neutral-800 rounded-2xl p-3.5 sm:p-4 border border-neutral-700/60 shadow-card flex flex-col items-center justify-between text-center min-h-[160px] sm:min-h-[165px] transition-all hover:-translate-y-1 hover:border-neutral-500 duration-200"
             >
               <span className="text-sm font-medium text-neutral-200">
                 {d.dayLabel}
@@ -32,11 +33,12 @@ export default function DailyForecast({ daily }) {
               <img
                 src={info.icon}
                 alt={info.label}
-                className="w-[60px] h-[60px] object-contain my-2 drop-shadow"
+                className="w-12 h-12 sm:w-14 sm:h-14 object-contain my-2 drop-shadow"
               />
-              <div className="flex items-center justify-between w-full text-sm font-medium px-2">
-                <span className="text-neutral-300">{d.minTemp}°</span>
+              {/* Max on LEFT (bold white), Min on RIGHT (muted gray) */}
+              <div className="flex items-center justify-between w-full text-sm font-medium px-1">
                 <span className="text-neutral-0 font-bold">{d.maxTemp}°</span>
+                <span className="text-neutral-300">{d.minTemp}°</span>
               </div>
             </div>
           );
