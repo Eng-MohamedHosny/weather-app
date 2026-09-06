@@ -11,13 +11,12 @@ export default function CurrentWeather({ location, weather, units }) {
 
   return (
     <div
-      className="relative overflow-hidden rounded-[20px] md:rounded-[24px] shadow-card min-h-[286px] flex flex-col justify-between p-6 sm:p-8 md:p-10 bg-cover bg-center bg-no-repeat transition-all"
+      className="relative overflow-hidden rounded-[20px] md:rounded-[24px] shadow-card min-h-[286px] flex flex-col justify-center p-6 sm:p-8 md:p-8 lg:p-10 bg-cover bg-center bg-no-repeat transition-all bg-[url('/assets/images/bg-today-small.svg')] md:bg-[url('/assets/images/bg-today-large.svg')]"
       style={{
-        backgroundImage: `url('/assets/images/bg-today-large.svg')`,
         backgroundColor: '#2b1b9c',
       }}
     >
-      <div className="relative z-10 flex flex-col md:flex-row items-center md:items-center justify-between gap-6 my-auto text-center md:text-left w-full">
+      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 my-auto text-center md:text-left w-full">
         {/* Location & Date */}
         <div className="flex flex-col items-center md:items-start">
           <h2 className="text-2xl sm:text-3xl md:text-[32px] font-bold font-heading text-neutral-0 tracking-tight leading-snug drop-shadow-sm">
@@ -34,7 +33,7 @@ export default function CurrentWeather({ location, weather, units }) {
           <img
             src={info.icon}
             alt={info.label}
-            className="w-20 h-20 sm:w-24 sm:h-24 md:w-[110px] md:h-[110px] object-contain drop-shadow-lg"
+            className="w-20 h-20 sm:w-24 sm:h-24 md:w-[110px] md:h-[110px] lg:w-[120px] lg:h-[120px] object-contain drop-shadow-lg"
           />
           <div className="flex items-start">
             <span className="text-6xl sm:text-7xl md:text-[96px] font-bold font-heading text-neutral-0 leading-none tracking-tighter">

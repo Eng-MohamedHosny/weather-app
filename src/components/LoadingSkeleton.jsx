@@ -3,7 +3,7 @@ import React from 'react';
 export default function LoadingSkeleton() {
   return (
     <div className="w-full mt-6">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column */}
         <div className="lg:col-span-8 flex flex-col">
           {/* Main Card Loading */}
@@ -17,7 +17,7 @@ export default function LoadingSkeleton() {
           </div>
 
           {/* 4 Metrics with Dashes */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mt-6">
             {['Feels Like', 'Humidity', 'Wind', 'Precipitation'].map((label) => (
               <div
                 key={label}
@@ -34,7 +34,7 @@ export default function LoadingSkeleton() {
             <h3 className="text-xl font-bold font-heading text-neutral-0 mb-4">
               Daily forecast
             </h3>
-            <div className="grid grid-cols-3 sm:grid-cols-7 gap-3 sm:gap-4">
+            <div className="grid grid-cols-3 md:grid-cols-7 gap-3 md:gap-4">
               {[1, 2, 3, 4, 5, 6, 7].map((i) => (
                 <div
                   key={i}
@@ -46,7 +46,7 @@ export default function LoadingSkeleton() {
         </div>
 
         {/* Right Column (Hourly Skeleton) */}
-        <div className="lg:col-span-4">
+        <div className="lg:col-span-4 mt-8 lg:mt-0">
           <div className="bg-neutral-800 rounded-[20px] md:rounded-[24px] p-5 sm:p-6 border border-neutral-700/60 shadow-card flex flex-col h-full">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold font-heading text-neutral-0">

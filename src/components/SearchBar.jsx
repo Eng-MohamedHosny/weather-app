@@ -82,11 +82,11 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults }
   };
 
   return (
-    <div ref={wrapperRef} className="relative w-full max-w-[656px] mx-auto z-30">
+    <div ref={wrapperRef} className="relative w-full max-w-[720px] lg:max-w-[656px] mx-auto z-30">
       {/* Search Input and Button */}
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4"
+        className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4"
       >
         <div className="relative flex-1">
           <div className="absolute inset-y-0 left-0 pl-4 sm:pl-5 flex items-center pointer-events-none">
@@ -114,54 +114,54 @@ export default function SearchBar({ onSelectLocation, isSearching, onNoResults }
             placeholder="Search for a place..."
             className="w-full bg-neutral-800 text-neutral-0 placeholder-neutral-300 pl-12 sm:pl-14 pr-4 h-[56px] rounded-xl border border-neutral-700 hover:border-neutral-600 focus:border-neutral-500 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white text-base shadow-card transition-all"
           />
+
+          {/* Autocomplete / Search in progress Dropdown matching input width exactly */}
+          {showDropdown && query.trim().length >= 2 && (
+            <div className="absolute left-0 right-0 top-full mt-2 bg-neutral-800 border border-neutral-700 rounded-xl shadow-dropdown overflow-hidden z-50">
+              {loadingSuggestions ? (
+                <div className="px-5 py-4 text-neutral-200 text-sm flex items-center gap-3">
+                  <img
+                    src="/assets/images/icon-loading.svg"
+                    alt=""
+                    className="w-4 h-4 animate-spin"
+                  />
+                  <span>Search in progress</span>
+                </div>
+              ) : suggestions.length > 0 ? (
+                <ul className="divide-y divide-neutral-700/50 max-h-60 overflow-y-auto">
+                  {suggestions.map((item) => (
+                    <li key={`${item.id}-${item.latitude}-${item.longitude}`}>
+                      <button
+                        type="button"
+                        onClick={() => handleSelect(item)}
+                        className="w-full text-left px-5 py-3 hover:bg-neutral-700/60 transition-colors flex items-center justify-between group"
+                      >
+                        <div>
+                          <span className="font-medium text-neutral-0 group-hover:text-white">
+                            {item.name}
+                          </span>
+                          {(item.admin1 || item.country) && (
+                            <span className="text-neutral-300 text-xs ml-2">
+                              {[item.admin1, item.country].filter(Boolean).join(', ')}
+                            </span>
+                          )}
+                        </div>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          )}
         </div>
 
         <button
           type="submit"
-          className="bg-brand-blue hover:bg-brand-blueHover text-white font-medium h-[52px] sm:h-[56px] px-8 rounded-xl transition-all shadow-card flex items-center justify-center text-base focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white cursor-pointer"
+          className="bg-brand-blue hover:bg-brand-blueHover text-white font-medium h-[56px] px-8 rounded-xl transition-all shadow-card flex items-center justify-center text-base focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white cursor-pointer w-full md:w-auto"
         >
           Search
         </button>
       </form>
-
-      {/* Autocomplete / Search in progress Dropdown */}
-      {showDropdown && query.trim().length >= 2 && (
-        <div className="absolute left-0 right-0 sm:right-[134px] top-full mt-2 bg-neutral-800 border border-neutral-700 rounded-xl shadow-dropdown overflow-hidden z-50">
-          {loadingSuggestions ? (
-            <div className="px-5 py-4 text-neutral-200 text-sm flex items-center gap-3">
-              <img
-                src="/assets/images/icon-loading.svg"
-                alt=""
-                className="w-4 h-4 animate-spin"
-              />
-              <span>Search in progress</span>
-            </div>
-          ) : suggestions.length > 0 ? (
-            <ul className="divide-y divide-neutral-700/50 max-h-60 overflow-y-auto">
-              {suggestions.map((item) => (
-                <li key={`${item.id}-${item.latitude}-${item.longitude}`}>
-                  <button
-                    type="button"
-                    onClick={() => handleSelect(item)}
-                    className="w-full text-left px-5 py-3 hover:bg-neutral-700/60 transition-colors flex items-center justify-between group"
-                  >
-                    <div>
-                      <span className="font-medium text-neutral-0 group-hover:text-white">
-                        {item.name}
-                      </span>
-                      {(item.admin1 || item.country) && (
-                        <span className="text-neutral-300 text-xs ml-2">
-                          {[item.admin1, item.country].filter(Boolean).join(', ')}
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-      )}
     </div>
   );
 }

@@ -34,14 +34,14 @@ export default function WeatherMetrics({ current, units }) {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mt-6">
       {metrics.map((m) => (
         <div
           key={m.id}
           className="bg-neutral-800 rounded-2xl p-5 border border-neutral-700/60 shadow-card flex flex-col justify-between min-h-[118px] transition-transform hover:-translate-y-0.5 duration-200"
         >
           <span className="text-neutral-300 text-sm font-medium">{m.label}</span>
-          <span className="text-2xl sm:text-3xl font-bold font-heading text-neutral-0 mt-3 tracking-tight">
+          <span className="text-2xl sm:text-3xl md:text-[32px] font-bold font-heading text-neutral-0 mt-3 tracking-tight leading-none">
             {m.value}
           </span>
         </div>

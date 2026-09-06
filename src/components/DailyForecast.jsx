@@ -18,8 +18,8 @@ export default function DailyForecast({ daily }) {
         Daily forecast
       </h3>
 
-      {/* Fluid responsive grid: 3 columns on mobile, 7 columns on tablet & desktop */}
-      <div className="grid grid-cols-3 sm:grid-cols-7 gap-3 sm:gap-3.5 md:gap-4">
+      {/* Fluid responsive grid: 3 columns on mobile (<768px), 7 columns on tablet (768px+) & desktop */}
+      <div className="grid grid-cols-3 md:grid-cols-7 gap-3 md:gap-4">
         {days.map((d, index) => {
           const info = getWeatherInfo(d.code);
           return (
