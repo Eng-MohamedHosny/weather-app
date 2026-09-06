@@ -8,17 +8,14 @@ import HourlyForecast from './components/HourlyForecast';
 import LoadingSkeleton from './components/LoadingSkeleton';
 import ErrorState from './components/ErrorState';
 import { fetchWeatherData } from './services/weatherApi';
-
-// Default initial location: Berlin, Germany (matches Figma default mockups)
-const DEFAULT_LOCATION = {
-  name: 'Berlin',
-  country: 'Germany',
-  latitude: 52.5244,
-  longitude: 13.4105,
-};
+import {
+  getIpLocation,
+  getPreciseLocation,
+  DEFAULT_FALLBACK_LOCATION,
+} from './services/locationService';
 
 export default function App() {
-  const [location, setLocation] = useState(DEFAULT_LOCATION);
+  const [location, setLocation] = useState(DEFAULT_FALLBACK_LOCATION);
   const [units, setUnits] = useState({
     temperature: 'celsius',
     windSpeed: 'kmh',
@@ -28,6 +25,52 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [noResults, setNoResults] = useState(false);
+
+  // Initialize location based on IP geolocation, then ask for precise GPS
+  useEffect(() => {
+    let isMounted = true;
+
+    async function initUserLocation() {
+      // 1. Immediately get location based on user's public IP
+      try {
+        const ipLoc = await getIpLocation();
+        if (isMounted && ipLoc) {
+          setLocation(ipLoc);
+        }
+      } catch (err) {
+        console.warn('IP geolocation failed:', err);
+      }
+
+      // 2. Request permission for high-precision GPS coordinates
+      try {
+        const preciseLoc = await getPreciseLocation();
+        if (isMounted && preciseLoc) {
+          setLocation(preciseLoc);
+        }
+      } catch (err) {
+        console.info('Precision geolocation not granted or unavailable:', err.message);
+      }
+    }
+
+    initUserLocation();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleUseCurrentLocation = useCallback(async () => {
+    try {
+      const preciseLoc = await getPreciseLocation();
+      setLocation(preciseLoc);
+      setNoResults(false);
+    } catch (err) {
+      console.warn('GPS failed, attempting IP fallback:', err);
+      const ipLoc = await getIpLocation();
+      setLocation(ipLoc);
+      setNoResults(false);
+    }
+  }, []);
 
   const loadWeather = useCallback(async () => {
     if (!location) return;
@@ -71,6 +114,7 @@ export default function App() {
               }}
               isSearching={loading}
               onNoResults={(empty) => setNoResults(empty)}
+              onUseCurrentLocation={handleUseCurrentLocation}
             />
           </section>
 

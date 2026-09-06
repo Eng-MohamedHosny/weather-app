@@ -1,5 +1,6 @@
 import React from 'react';
 import { getWeatherInfo, formatFullDate } from '../utils/weatherCodes';
+import NoiseOverlay from './NoiseOverlay';
 
 export default function CurrentWeather({ location, weather, units }) {
   if (!weather || !weather.current) return null;
@@ -11,11 +12,25 @@ export default function CurrentWeather({ location, weather, units }) {
 
   return (
     <div
-      className="relative overflow-hidden rounded-[20px] md:rounded-[24px] shadow-card min-h-[286px] flex flex-col justify-center p-6 sm:p-8 md:p-8 lg:p-10 bg-cover bg-center bg-no-repeat transition-all bg-[url('/assets/images/bg-today-small.svg')] md:bg-[url('/assets/images/bg-today-large.svg')]"
-      style={{
-        backgroundColor: '#2b1b9c',
-      }}
+      className="relative overflow-hidden rounded-[20px] md:rounded-[24px] shadow-card min-h-[286px] flex flex-col justify-center p-6 sm:p-8 md:p-8 lg:p-10 transition-all bg-[#2b1b9c]"
     >
+      {/* Background SVG vector illustrations */}
+      <img
+        src="/assets/images/bg-today-large.svg"
+        alt=""
+        aria-hidden="true"
+        className="hidden md:block absolute inset-0 w-full h-full object-cover pointer-events-none rounded-[20px] md:rounded-[24px]"
+      />
+      <img
+        src="/assets/images/bg-today-small.svg"
+        alt=""
+        aria-hidden="true"
+        className="block md:hidden absolute inset-0 w-full h-full object-cover pointer-events-none rounded-[20px]"
+      />
+
+      {/* Hardware-accelerated Figma feTurbulence Noise Layer */}
+      <NoiseOverlay />
+
       <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 my-auto text-center md:text-left w-full">
         {/* Location & Date */}
         <div className="flex flex-col items-center md:items-start">
